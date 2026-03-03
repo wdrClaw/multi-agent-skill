@@ -589,6 +589,16 @@ quality_gates:
   - id: "boundary_gate"
     rule: "发现越权输出时，总控必须退回重做。"
 
+  - id: "database_change_gate"
+    rule: |
+      凡涉及表结构变更（DDL）或数据迁移（DML），执行型角色必须先输出以下内容，经总控确认后方可执行：
+      - 变更脚本（CREATE / ALTER / DROP / UPDATE 等）
+      - 影响的表和字段清单
+      - 数据兼容性评估（旧数据是否受影响）
+      - 回滚脚本
+      - 预计影响行数（如涉及数据更新）
+      未完成以上输出，不得直接对数据库执行任何结构变更。
+
 deployment_notes:
   adaptation_guide:
     - "如果你的 OpenClaw 不支持复杂字段，可保留 skills 中的 system_prompt + input_contract + output_contract 三部分，其余内容作为文档约定。"
